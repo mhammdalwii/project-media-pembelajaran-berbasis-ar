@@ -1,26 +1,48 @@
-// src/pages/ARPage.tsx
 import "aframe";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Scene, Entity } from "aframe-react";
 
 const ARPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sceneRef = useRef<any>(null);
 
   useEffect(() => {
-    const sceneEl = sceneRef.current?.el;
-    if (sceneEl) {
-      sceneEl.addEventListener("loaded", () => setIsLoaded(true));
-    }
+    const onLoaded = () => setIsLoaded(true);
+    window.addEventListener("load", onLoaded);
+    return () => window.removeEventListener("load", onLoaded);
   }, []);
 
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
       <Helmet>
         <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+        <style>{`
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+    }
+    .a-canvas, .a-scene, canvas {
+      position: fixed !important;
+      top: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+    /* Fix untuk kamera feed di mobile */
+    video, .a-video, #arjs-video, .arjs-video {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      z-index: -1 !important;
+    }
+  `}</style>
       </Helmet>
 
       {/* Tombol Kembali */}
@@ -37,10 +59,14 @@ const ARPage = () => {
       )}
 
       {/* Scene pakai aframe-react */}
-      <Scene ref={sceneRef} embedded vr-mode-ui="enabled: false" arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;" style={{ width: "100%", height: "100%" }}>
+      <Scene
+        embedded
+        vr-mode-ui="enabled: false"
+        arjs="trackingMethod: best; sourceType: webcam; facingMode: environment; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; cameraParametersUrl=https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/examples/marker-training/examples/CameraParameters/camera_para.dat"
+        style={{ width: "100%", height: "100%" }}
+      >
         {isLoaded && (
           <Entity
-            primitive="a-entity"
             position="0 1.5 -2"
             text={{
               value: "Arahkan kamera ke marker",
@@ -51,10 +77,10 @@ const ARPage = () => {
           />
         )}
 
+        {/* Marker */}
         <Entity primitive="a-marker" type="pattern" url="/assets/resistor.patt">
           <Entity gltf-model="url(/assets/resistor.glb)" scale="0.05 0.05 0.05" position="0 0 0" rotation="-90 0 0" />
           <Entity
-            primitive="a-entity"
             text={{
               value: "Ini adalah Resistor.\nKomponen untuk menghambat arus listrik.",
               align: "center",
@@ -66,7 +92,8 @@ const ARPage = () => {
           />
         </Entity>
 
-        <Entity primitive="a-entity" camera />
+        {/* Kamera */}
+        <Entity primitive="a-entity" camera position="0 0 0" rotation="0 0 0" />
       </Scene>
     </div>
   );
