@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
+import styles from "./ARPage.module.css";
 
 const ARPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -13,37 +14,10 @@ const ARPage = () => {
     <div className="w-screen h-screen relative overflow-hidden">
       <Helmet>
         <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-        <style>{`
-          html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-          }
-          /* Paksa video AR.js selalu fullscreen */
-          video, .arjs-video, #arjs-video, .a-video {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-            z-index: -2 !important;
-          }
-          /* Pastikan canvas A-Frame juga menutupi layar */
-          canvas, .a-canvas, .a-scene {
-            position: fixed !important;
-            top: 0;
-            left: 0;
-            width: 100% !important;
-            height: 100% !important;
-            z-index: -1 !important;
-          }
-        `}</style>
       </Helmet>
 
       {/* Lapisan AR */}
-      <Scene embedded vr-mode-ui="enabled: false" arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false; detectionMode: mono;" className="absolute top-0 left-0 w-full h-full" events={{ loaded: () => setIsLoaded(true) }}>
+      <Scene embedded vr-mode-ui="enabled: false" arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false; detectionMode: mono;" className={styles.scene} events={{ loaded: () => setIsLoaded(true) }}>
         <Entity
           primitive="a-marker"
           type="pattern"
@@ -59,7 +33,7 @@ const ARPage = () => {
       </Scene>
 
       {/* Overlay UI */}
-      <div className="absolute inset-0 z-10 p-4 flex flex-col justify-between pointer-events-none">
+      <div className={styles.overlay}>
         {/* Atas */}
         <div className="w-full flex justify-center">
           {isLoaded && !markerFound && (
