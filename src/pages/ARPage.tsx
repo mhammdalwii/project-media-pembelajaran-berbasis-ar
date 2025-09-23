@@ -43,13 +43,7 @@ const ARPage = () => {
       </Helmet>
 
       {/* Lapisan AR */}
-      <Scene
-        embedded
-        vr-mode-ui="enabled: false"
-        arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
-        className="absolute top-0 left-0 w-full h-full"
-        events={{ loaded: () => setIsLoaded(true) }}
-      >
+      <Scene embedded vr-mode-ui="enabled: false" arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false; detectionMode: mono;" className="absolute top-0 left-0 w-full h-full" events={{ loaded: () => setIsLoaded(true) }}>
         <Entity
           primitive="a-marker"
           type="pattern"
