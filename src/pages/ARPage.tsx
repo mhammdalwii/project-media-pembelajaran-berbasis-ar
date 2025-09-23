@@ -1,6 +1,6 @@
 import "aframe";
 import { Scene, Entity } from "aframe-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
@@ -10,10 +10,20 @@ const ARPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [markerFound, setMarkerFound] = useState(false);
 
+  // iOS Safari viewport fix
+  useEffect(() => {
+    const setVh = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+    setVh();
+    window.addEventListener("resize", setVh);
+    return () => window.removeEventListener("resize", setVh);
+  }, []);
+
   return (
-    <div className={`w-screen h-screen relative overflow-hidden ${styles.container}`}>
+    <div className={styles.container}>
       <Helmet>
-        {/* ✅ Pastikan viewport mobile tidak lompat ke desktop */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
         <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
       </Helmet>
@@ -24,7 +34,7 @@ const ARPage = () => {
         renderer="logarithmicDepthBuffer: true;"
         vr-mode-ui="enabled: false"
         arjs="sourceType: webcam; facingMode: environment; detectionMode: mono; debugUIEnabled: false;"
-        className="absolute top-0 left-0 w-full h-full"
+        className={styles.scene}
         events={{ loaded: () => setIsLoaded(true) }}
       >
         <Entity
@@ -42,7 +52,7 @@ const ARPage = () => {
       </Scene>
 
       {/* Overlay UI */}
-      <div className="absolute inset-0 z-10 p-4 flex flex-col justify-between pointer-events-none">
+      <div className={styles.overlay}>
         {/* Atas */}
         <div className="w-full flex justify-center">
           {isLoaded && !markerFound && (
