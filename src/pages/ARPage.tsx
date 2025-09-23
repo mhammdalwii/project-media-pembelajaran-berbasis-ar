@@ -11,13 +11,22 @@ const ARPage = () => {
   const [markerFound, setMarkerFound] = useState(false);
 
   return (
-    <div className="w-screen h-screen relative overflow-hidden">
+    <div className={`w-screen h-screen relative overflow-hidden ${styles.container}`}>
       <Helmet>
+        {/* ✅ Pastikan viewport mobile tidak lompat ke desktop */}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
         <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
       </Helmet>
 
       {/* Lapisan AR */}
-      <Scene embedded vr-mode-ui="enabled: false" arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false; detectionMode: mono;" className={styles.scene} events={{ loaded: () => setIsLoaded(true) }}>
+      <Scene
+        embedded
+        renderer="logarithmicDepthBuffer: true;"
+        vr-mode-ui="enabled: false"
+        arjs="sourceType: webcam; facingMode: environment; detectionMode: mono; debugUIEnabled: false;"
+        className="absolute top-0 left-0 w-full h-full"
+        events={{ loaded: () => setIsLoaded(true) }}
+      >
         <Entity
           primitive="a-marker"
           type="pattern"
@@ -33,7 +42,7 @@ const ARPage = () => {
       </Scene>
 
       {/* Overlay UI */}
-      <div className={styles.overlay}>
+      <div className="absolute inset-0 z-10 p-4 flex flex-col justify-between pointer-events-none">
         {/* Atas */}
         <div className="w-full flex justify-center">
           {isLoaded && !markerFound && (
