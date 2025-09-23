@@ -17,13 +17,7 @@ const ARPage = () => {
       </Helmet>
 
       {/* Lapisan AR: Scene A-Frame sebagai background, diletakkan di lapisan paling bawah */}
-      <Scene
-        embedded
-        vr-mode-ui="enabled: false"
-        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
-        className="absolute top-0 left-0" // Mengisi kontainer
-        events={{ loaded: () => setIsLoaded(true) }}
-      >
+      <Scene embedded vr-mode-ui="enabled: false" arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;" className="absolute top-0 left-0" events={{ loaded: () => setIsLoaded(true) }}>
         <Entity
           primitive="a-marker"
           type="pattern"
